@@ -3,6 +3,7 @@ package assignment3;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,7 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 	private HttpClient client = null;
 	private static final String SPLIT_DEPT = ";";
-	private static final String filePath = "/home/bonii/Dropbox/teaching/AJava/workspace-bonii/src/assignment3/departmentservermapping.properties";
+	private static final String filePath = "/Users/jonegilsson/Dropbox/KU/Courses/advanced_java_programming/workspace/assignment3/src/assignment3/departmentservermapping.properties";
 	private Map<Integer, String> departmentServerURLMap;
 
 	XStream xmlStream;;
@@ -105,14 +106,71 @@ public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 
 	@Override
 	public List<Employee> listAllEmployees() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Employee> employees = new ArrayList<Employee>();
+		for (String serverURL : departmentServerURLMap.values())
+		{
+			ContentExchange exchange = new ContentExchange();
+			exchange.setMethod("POST");
+			exchange.setURL(serverURL + "listallemployees");
+			try 
+			{
+				client.send(exchange);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try 
+			{
+				exchange.waitForDone();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			String response = "";
+			try {
+				response = exchange.getResponseContent();
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			List<Employee> subEmployee = (List<Employee>) xmlStream.fromXML(response);
+			employees.addAll(subEmployee);
+		}
+		return employees;
 	}
 
 	@Override
 	public List<Employee> listEmployeesInDept(List<Integer> departmentIds) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Employee> employees = new ArrayList<Employee>();
+		for (int deptId : departmentIds)
+		{
+			String serverURL = "";
+			try {
+				serverURL = getServerURLForDepartment(deptId);
+			} catch (DepartmentNotFoundException e) {
+				e.printStackTrace();
+			}
+			ContentExchange exchange = new ContentExchange();
+			exchange.setURL(serverURL + "listallemployees");
+			try 
+			{
+				client.send(exchange);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try 
+			{
+				exchange.waitForDone();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			String response = "";
+			try {
+				response = exchange.getResponseContent();
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			List<Employee> subEmployee = (List<Employee>) xmlStream.fromXML(response);
+			employees.addAll(subEmployee);
+		}
+		return employees;
 	}
 
 	@Override
