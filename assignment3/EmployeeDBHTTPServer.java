@@ -11,7 +11,7 @@ import org.eclipse.jetty.server.Server;
 public class EmployeeDBHTTPServer {
 
 	public static void main(String[] args) throws Exception {
-		Server myServer = new Server(8080);
+		Server myServer = new Server(8088);
 		EmployeeDBHTTPHandler handler = new EmployeeDBHTTPHandler(); // This
 																		// handler
 																		// will

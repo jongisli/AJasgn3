@@ -33,15 +33,11 @@ public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 	private static final String filePath = "/Users/jonegilsson/Dropbox/KU/Courses/advanced_java_programming/workspace/assignment3/src/assignment3/departmentservermapping.properties";
 	private Map<Integer, String> departmentServerURLMap;
 
-	XStream xmlStream;;
-
 	public EmployeeDBHTTPClient() throws Exception {
 		initMappings();
 		client = new HttpClient();
 		client.setTimeout(3000);
 		client.start();
-		
-		xmlStream = new XStream(new StaxDriver());
 	}
 
 	public void initMappings() throws IOException, IllegalArgumentException {
@@ -84,6 +80,7 @@ public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 
 	@Override
 	public void addEmployee(Employee emp) {
+		XStream xmlStream = new XStream(new StaxDriver());
 		String empString = xmlStream.toXML(emp);
 		String serverURL = "";
 		try {
@@ -107,8 +104,14 @@ public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 	@Override
 	public List<Employee> listAllEmployees() {
 		List<Employee> employees = new ArrayList<Employee>();
+		List<String> visitedServers = new ArrayList<String>();
 		for (String serverURL : departmentServerURLMap.values())
 		{
+			if (visitedServers.contains(serverURL))
+				continue;
+			else
+				visitedServers.add(serverURL);
+			
 			ContentExchange exchange = new ContentExchange();
 			exchange.setMethod("POST");
 			exchange.setURL(serverURL + "listallemployees");
@@ -117,20 +120,26 @@ public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 				client.send(exchange);
 			} catch (IOException e) {
 				e.printStackTrace();
+				return null;
 			}
 			try 
 			{
 				exchange.waitForDone();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				return null;
 			}
 			String response = "";
 			try {
 				response = exchange.getResponseContent();
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
+				return null;
 			}
-			List<Employee> subEmployee = (List<Employee>) xmlStream.fromXML(response);
+			XStream xmlStream = new XStream(new StaxDriver());
+			
+			List<Employee> subEmployee = new ArrayList<Employee>();
+			subEmployee = (ArrayList<Employee>) xmlStream.fromXML(response);
 			employees.addAll(subEmployee);
 		}
 		return employees;
@@ -167,6 +176,7 @@ public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
+			XStream xmlStream = new XStream(new StaxDriver());
 			List<Employee> subEmployee = (List<Employee>) xmlStream.fromXML(response);
 			employees.addAll(subEmployee);
 		}
