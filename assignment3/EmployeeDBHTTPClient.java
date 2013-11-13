@@ -191,7 +191,29 @@ public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 			List<SalaryIncrement> salaryIncrements)
 			throws DepartmentNotFoundException,
 			NegativeSalaryIncrementException {
-		// TODO Auto-generated method stub
+		if (salaryIncrements.size() == 0)
+		{
+			return;
+		}
+		String serverURL = "";
+		try {
+			serverURL = getServerURLForDepartment(salaryIncrements.get(0).getDepartment());
+		} catch (DepartmentNotFoundException e) {
+			e.printStackTrace();
+		}
+		XStream xmlStream = new XStream(new StaxDriver());
+		String salIncrString = xmlStream.toXML(salaryIncrements);
+		ContentExchange exchange = new ContentExchange();
+		Buffer buffer = new ByteArrayBuffer(salIncrString);
+		exchange.setMethod("POST");
+		exchange.setRequestContent(buffer);
+		exchange.setURL(serverURL + "incrementsalaryofdepartment");
+		try 
+		{
+			client.send(exchange);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

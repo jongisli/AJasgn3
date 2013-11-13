@@ -26,9 +26,9 @@ import assignment3.SimpleEmployeeDB;
  */
 public class EmployeeDBTest {
 	private static EmployeeDB employeeDB = null;
-	private Employee employee1;
-	private Employee employee2;
-	private Employee employee3;
+	private Employee employee1 = new Employee();;
+	private Employee employee2 = new Employee();;
+	private Employee employee3 = new Employee();;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -47,11 +47,8 @@ public class EmployeeDBTest {
 
 	@Test
 	public void testAddEmployee() {
-		employee1 = new Employee();
 		SetEmployeeProperties(employee1, 1, "Jon", 1, 100);
-		employee2 = new Employee();
 		SetEmployeeProperties(employee2, 2, "Georg", 2, 200);
-		employee3 = new Employee();
 		SetEmployeeProperties(employee3, 3, "Bin", 1, 100);
 		//assertEquals(0, employeeDB.listAllEmployees().size());
 		Boolean OK = true;
@@ -68,7 +65,12 @@ public class EmployeeDBTest {
 
 	@Test
 	public void testListAllEmployees() {
+		SetEmployeeProperties(employee1, 1, "Jon", 1, 100);
+		SetEmployeeProperties(employee2, 2, "Georg", 2, 200);
+		SetEmployeeProperties(employee3, 3, "Bin", 1, 100);
+		
 		List<Employee> empList = employeeDB.listAllEmployees();
+		
 		AssertSameEmployee(employee1, empList.get(0));
 		AssertSameEmployee(employee2, empList.get(1));
 		AssertSameEmployee(employee3, empList.get(2));
