@@ -94,7 +94,7 @@ public class EmployeeDBTest {
 		
 		List<Integer> emptyDep = new ArrayList<Integer>();
 		List<Employee> emptyDepEmployeeList = employeeDB.listEmployeesInDept(emptyDep);
-		assertEquals(0, emptyDepEmployeeList.size());
+		assertNull(emptyDepEmployeeList);
 	}
 
 	@Test

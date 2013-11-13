@@ -146,39 +146,43 @@ public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 
 	@Override
 	public List<Employee> listEmployeesInDept(List<Integer> departmentIds) {
-		List<Employee> employees = new ArrayList<Employee>();
-		for (int deptId : departmentIds)
+		if (departmentIds.size() == 0)
 		{
-			String serverURL = "";
-			try {
-				serverURL = getServerURLForDepartment(deptId);
-			} catch (DepartmentNotFoundException e) {
-				e.printStackTrace();
-			}
-			ContentExchange exchange = new ContentExchange();
-			exchange.setURL(serverURL + "listemployeesindept");
-			try 
-			{
-				client.send(exchange);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			try 
-			{
-				exchange.waitForDone();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			String response = "";
-			try {
-				response = exchange.getResponseContent();
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-			XStream xmlStream = new XStream(new StaxDriver());
-			List<Employee> subEmployee = (List<Employee>) xmlStream.fromXML(response);
-			employees.addAll(subEmployee);
+			return null;
 		}
+		String serverURL = "";
+		try {
+			serverURL = getServerURLForDepartment(departmentIds.get(0));
+		} catch (DepartmentNotFoundException e) {
+			e.printStackTrace();
+		}
+		XStream xmlStream = new XStream(new StaxDriver());
+		String deptIdsString = xmlStream.toXML(departmentIds);
+		ContentExchange exchange = new ContentExchange();
+		Buffer buffer = new ByteArrayBuffer(deptIdsString);
+		exchange.setMethod("POST");
+		exchange.setRequestContent(buffer);
+		exchange.setURL(serverURL + "listemployeesindept");
+		try 
+		{
+			client.send(exchange);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try 
+		{
+			exchange.waitForDone();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		String response = "";
+		try {
+			response = exchange.getResponseContent();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		List<Employee> employees = (List<Employee>) xmlStream.fromXML(response);
+
 		return employees;
 	}
 
