@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import assignment3.DepartmentNotFoundException;
@@ -24,12 +25,12 @@ import assignment3.SimpleEmployeeDB;
  * 
  */
 public class EmployeeDBTest {
-	private EmployeeDB employeeDB = null;
+	private static EmployeeDB employeeDB = null;
 	private Employee employee1;
 	private Employee employee2;
 	private Employee employee3;
 
-	@Before
+	@BeforeClass
 	public void setUp() throws Exception {
 		employeeDB = new EmployeeDBHTTPClient();
 		
