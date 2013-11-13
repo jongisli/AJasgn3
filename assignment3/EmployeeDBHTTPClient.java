@@ -80,8 +80,6 @@ public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 
 	@Override
 	public void addEmployee(Employee emp) {
-		XStream xmlStream = new XStream(new StaxDriver());
-		String empString = xmlStream.toXML(emp);
 		String serverURL = "";
 		try {
 			serverURL = getServerURLForDepartment(emp.department);
@@ -91,9 +89,10 @@ public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 		}
 		
 		ContentExchange exchange = new ContentExchange();
-		exchange.setURL(serverURL + "addemployee");
-		Buffer buffer = new ByteArrayBuffer(empString);
-		exchange.setRequestContent(buffer);
+		String requestURL = String.format(
+				serverURL + "addemployee?id=%d&name=%s&department=%d&salary=%f", 
+				emp.id, emp.name, emp.department, emp.salary);
+		exchange.setURL(requestURL);
 		try {
 			client.send(exchange);
 		} catch (IOException e) {
