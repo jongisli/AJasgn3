@@ -54,6 +54,24 @@ public class SimpleEmployeeDB implements EmployeeDB {
 			List<SalaryIncrement> salaryIncrements)
 			throws DepartmentNotFoundException,
 			NegativeSalaryIncrementException {
+		
+		List<Integer> allDept = new ArrayList<Integer>();
+		
+		
+		for(int i = 0; i < instanceList.size(); i++) {
+			allDept.add(instanceList.get(i).getDepartment());
+		}
+		
+		Boolean exists = true;
+		
+		for(int i = 0; i< salaryIncrements.size(); i++) {
+			exists = allDept.contains(salaryIncrements.get(i).getDepartment());
+		}
+		
+		if(exists == false) {
+			throw new DepartmentNotFoundException();
+		}
+		
 		for(int i=0; i<salaryIncrements.size();i++)
 		{
 			if(salaryIncrements.get(i).getIncrementBy() >=0)
