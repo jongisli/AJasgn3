@@ -1,9 +1,11 @@
-package assignment3;
+package tests;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import assignment3.EmployeeDB;
 
 /**
  * Generated JUnit test class to test the EmployeeDB interface. It can be used
