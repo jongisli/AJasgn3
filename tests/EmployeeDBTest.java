@@ -100,6 +100,7 @@ public class EmployeeDBTest {
 		SalaryIncrement si1 = new SalaryIncrement();
 		si1.setDepartment(1);
 		si1.setIncrementBy(10);
+		salaryIncrementsDept1.add(si1);
 		employeeDB.incrementSalaryOfDepartment(salaryIncrementsDept1);
 		
 		List<Employee> dept1After = employeeDB.listEmployeesInDept(dept1);
@@ -108,6 +109,33 @@ public class EmployeeDBTest {
 			assertEquals(dept1Before.get(i).getSalary() + 10, dept1After.get(i).getSalary(), 0.1);
 		}
 		
+		Boolean deptNotFoundExThrown = false;
+		try {
+			List<SalaryIncrement> salaryIncrementsDeptX = new ArrayList<SalaryIncrement>();
+			SalaryIncrement siX = new SalaryIncrement();
+			siX.setDepartment(-1);
+			siX.setIncrementBy(10);
+			salaryIncrementsDeptX.add(siX);
+			employeeDB.incrementSalaryOfDepartment(salaryIncrementsDeptX);
+		} catch (DepartmentNotFoundException e)
+		{
+			deptNotFoundExThrown = true;
+		}
+		assertTrue(deptNotFoundExThrown);
+		
+		Boolean negSalIncrThrown = false;
+		try {
+			List<SalaryIncrement> salaryIncrementsDeptY = new ArrayList<SalaryIncrement>();
+			SalaryIncrement siY = new SalaryIncrement();
+			siY.setDepartment(1);
+			siY.setIncrementBy(-10);
+			salaryIncrementsDeptY.add(siY);
+			employeeDB.incrementSalaryOfDepartment(salaryIncrementsDeptY);
+		} catch (NegativeSalaryIncrementException e)
+		{
+			negSalIncrThrown = true;
+		}
+		assertTrue(negSalIncrThrown);
 		
 	}
 	
