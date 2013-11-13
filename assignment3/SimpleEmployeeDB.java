@@ -55,11 +55,7 @@ public class SimpleEmployeeDB implements EmployeeDB {
 			List<SalaryIncrement> salaryIncrements)
 			throws DepartmentNotFoundException,
 			NegativeSalaryIncrementException {
-<<<<<<< HEAD
 		List<Integer> listAllDet = new ArrayList<Integer>();
-		
-
-=======
 		
 		List<Integer> allDept = new ArrayList<Integer>();
 		
@@ -78,7 +74,6 @@ public class SimpleEmployeeDB implements EmployeeDB {
 			throw new DepartmentNotFoundException();
 		}
 		
->>>>>>> 3ad21fbb991f94eb77e147d1c1c037416cf6f9b1
 		for(int i=0; i<salaryIncrements.size();i++)
 		{
 			if(salaryIncrements.get(i).getIncrementBy() >=0)
