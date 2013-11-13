@@ -96,6 +96,12 @@ public class EmployeeDBTest {
 		dept1.add(1);
 		List<Employee> dept1Before = employeeDB.listEmployeesInDept(dept1);
 		
+		List<Float> dept1BeforeSalary = new ArrayList<Float>();
+		
+		for (int i = 0; i<dept1Before.size(); i++) {
+			dept1BeforeSalary.add(dept1Before.get(i).getSalary());
+		}
+		
 		List<SalaryIncrement> salaryIncrementsDept1 = new ArrayList<SalaryIncrement>();
 		SalaryIncrement si1 = new SalaryIncrement();
 		si1.setDepartment(1);
@@ -106,7 +112,7 @@ public class EmployeeDBTest {
 		List<Employee> dept1After = employeeDB.listEmployeesInDept(dept1);
 		for(int i = 0; i < dept1After.size(); i++)
 		{
-			assertEquals(dept1Before.get(i).getSalary() + 10, dept1After.get(i).getSalary(), 0.1);
+			assertEquals(dept1BeforeSalary.get(i) + 10, dept1After.get(i).getSalary(), 0.1);
 		}
 		
 		Boolean deptNotFoundExThrown = false;
