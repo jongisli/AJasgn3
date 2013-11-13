@@ -8,8 +8,11 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import assignment3.DepartmentNotFoundException;
 import assignment3.Employee;
 import assignment3.EmployeeDB;
+import assignment3.NegativeSalaryIncrementException;
+import assignment3.SalaryIncrement;
 import assignment3.SimpleEmployeeDB;
 
 /**
@@ -88,8 +91,52 @@ public class EmployeeDBTest {
 	}
 
 	@Test
-	public void testIncrementSalaryOfDepartment() {
-		fail("Not yet implemented");
+	public void testIncrementSalaryOfDepartment() throws DepartmentNotFoundException, NegativeSalaryIncrementException {
+		List<Integer> dept1 = new ArrayList<Integer>();
+		dept1.add(1);
+		List<Employee> dept1Before = employeeDB.listEmployeesInDept(dept1);
+		
+		List<SalaryIncrement> salaryIncrementsDept1 = new ArrayList<SalaryIncrement>();
+		SalaryIncrement si1 = new SalaryIncrement();
+		si1.setDepartment(1);
+		si1.setIncrementBy(10);
+		salaryIncrementsDept1.add(si1);
+		employeeDB.incrementSalaryOfDepartment(salaryIncrementsDept1);
+		
+		List<Employee> dept1After = employeeDB.listEmployeesInDept(dept1);
+		for(int i = 0; i < dept1After.size(); i++)
+		{
+			assertEquals(dept1Before.get(i).getSalary() + 10, dept1After.get(i).getSalary(), 0.1);
+		}
+		
+		Boolean deptNotFoundExThrown = false;
+		try {
+			List<SalaryIncrement> salaryIncrementsDeptX = new ArrayList<SalaryIncrement>();
+			SalaryIncrement siX = new SalaryIncrement();
+			siX.setDepartment(-1);
+			siX.setIncrementBy(10);
+			salaryIncrementsDeptX.add(siX);
+			employeeDB.incrementSalaryOfDepartment(salaryIncrementsDeptX);
+		} catch (DepartmentNotFoundException e)
+		{
+			deptNotFoundExThrown = true;
+		}
+		assertTrue(deptNotFoundExThrown);
+		
+		Boolean negSalIncrThrown = false;
+		try {
+			List<SalaryIncrement> salaryIncrementsDeptY = new ArrayList<SalaryIncrement>();
+			SalaryIncrement siY = new SalaryIncrement();
+			siY.setDepartment(1);
+			siY.setIncrementBy(-10);
+			salaryIncrementsDeptY.add(siY);
+			employeeDB.incrementSalaryOfDepartment(salaryIncrementsDeptY);
+		} catch (NegativeSalaryIncrementException e)
+		{
+			negSalIncrThrown = true;
+		}
+		assertTrue(negSalIncrThrown);
+		
 	}
 	
 	private void SetEmployeeProperties(Employee empl, int id, String name, int department, float salary)
@@ -105,7 +152,7 @@ public class EmployeeDBTest {
 		assertEquals(expected.getId(), actual.getId());
 		assertEquals(expected.getName(), actual.getName());
 		assertEquals(expected.getDepartment(), actual.getDepartment());
-		assertEquals(expected.getSalary(), actual.getSalary(), 0.00001);
+		assertEquals(expected.getSalary(), actual.getSalary(), 0.1);
 	}
 	
 
