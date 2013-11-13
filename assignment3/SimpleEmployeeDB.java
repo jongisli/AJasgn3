@@ -5,7 +5,7 @@ import java.util.List;
 
 public class SimpleEmployeeDB implements EmployeeDB {
 	private static SimpleEmployeeDB instance = null;
-	private ArrayList<Employee> instanceList = new ArrayList<Employee>();
+	private List<Employee> instanceList = new ArrayList<Employee>();
 
 	private SimpleEmployeeDB() {
 
