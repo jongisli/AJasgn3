@@ -5,6 +5,7 @@ import java.util.List;
 
 public class SimpleEmployeeDB implements EmployeeDB {
 	private static SimpleEmployeeDB instance = null;
+
 	private List<Employee> instanceList = new ArrayList<Employee>();
 
 	private SimpleEmployeeDB() {
@@ -54,15 +55,19 @@ public class SimpleEmployeeDB implements EmployeeDB {
 			List<SalaryIncrement> salaryIncrements)
 			throws DepartmentNotFoundException,
 			NegativeSalaryIncrementException {
+		List<Integer> listAllDet = new ArrayList<Integer>();
+		
+
 		for(int i=0; i<salaryIncrements.size();i++)
 		{
 			if(salaryIncrements.get(i).getIncrementBy() >=0)
 			{
 				for(int j=0; j<instanceList.size();j++)
 				{
+					listAllDet.add(salaryIncrements.get(i).getDepartment());
 					if(salaryIncrements.get(i).getDepartment() == instanceList.get(j).getDepartment())
 					{
-						instanceList.get(j).setSalary(salaryIncrements.get(i).getIncrementBy());
+						instanceList.get(j).setSalary(instanceList.get(j).getSalary()+salaryIncrements.get(i).getIncrementBy());
 					}
 					else {throw new DepartmentNotFoundException();}
 					
