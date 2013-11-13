@@ -3,6 +3,7 @@ package assignment3;
 //import StaxDriver;
 //import XStream;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,39 +31,101 @@ public class EmployeeDBHTTPHandler extends AbstractHandler {
 	/**
 	 * Although this method is thread-safe, what it invokes is not thread-safe
 	 */
+	
 	public void handle(String target, Request baseRequest,
 			HttpServletRequest req, HttpServletResponse res)
 			throws IOException, ServletException {
 		
-		res.setContentType("text/html;charset=utf-8");
-		res.setStatus(HttpServletResponse.SC_OK);
-		
+				
 		String uri = req.getRequestURI().trim().toUpperCase();
 		
-		XStream xmlStream = new XStream(new StaxDriver());
-		
-		int len = req.getContentLength();
-		BufferedReader reqReader = req.getReader();
-		char[] cbuf = new char[len];
-		reqReader.read(cbuf);
-		reqReader.close();
-		String content = new String(cbuf);
-		
-		String xmlString;
-		
-		
+		/*
+				
+		*/
 		if (uri.equalsIgnoreCase("/addemployee")) {
-			Employee emp = (Employee)xmlStream.fromXML(content);
-			SimpleEmployeeDB.getInstance().addEmployee(emp);
 			// Retrieve the employee record from req and invoke methods on
 			// SimpleEmployeeDB
 			// SimpleEmployeeDB.getInstance().addEmployee(emp)
+			
+			int id = Integer.parseInt(req.getParameter("id"));
+			String name = req.getParameter("name");
+			int dep = Integer.parseInt(req.getParameter("department"));
+			float salary = Float.parseFloat(req.getParameter("salary"));
+			
+			Employee emp = new Employee();
+			emp.setId(id);
+			emp.setName(name);
+			emp.setDepartment(dep);
+			emp.setSalary(salary);
+			
+			SimpleEmployeeDB.getInstance().addEmployee(emp);
+		
 		}
 		else if (uri.equalsIgnoreCase("/listallemployees")) {
+			
+			XStream xmlStream = new XStream(new StaxDriver());
+			String xmlString;
+
 			List<Employee> emps = new ArrayList<Employee>();
 			emps = SimpleEmployeeDB.getInstance().listAllEmployees();
+			
 			xmlString = xmlStream.toXML(emps);
 			
+			res.setContentType("application/xml");
+			res.getWriter().println(xmlString);
+
+		}
+		else if(uri.equalsIgnoreCase("/listemployeesindept")) {
+			res.setContentType("text/html;charset=utf-8");
+			res.setStatus(HttpServletResponse.SC_OK);
+			
+			XStream xmlStream = new XStream(new StaxDriver());
+			
+			String xmlString;
+
+			int len = req.getContentLength();
+			BufferedReader reqReader = req.getReader();
+			char[] cbuf = new char[len];
+			reqReader.read(cbuf);
+			reqReader.close();
+			String content = new String(cbuf);
+			
+			List<Integer> deps = (List<Integer>) xmlStream.fromXML(content);
+			
+			List<Employee> emps = new ArrayList<Employee>();
+			emps = SimpleEmployeeDB.getInstance().listEmployeesInDept(deps);
+			
+			xmlString = xmlStream.toXML(emps);
+			
+			res.setContentType("application/xml");
+			res.getWriter().println(xmlString);
+			
+		} else if(uri.equalsIgnoreCase("/incrementsalaryofdepartment")) {
+			res.setContentType("text/html;charset=utf-8");
+			res.setStatus(HttpServletResponse.SC_OK);
+			
+			XStream xmlStream = new XStream(new StaxDriver());
+
+			int len = req.getContentLength();
+			BufferedReader reqReader = req.getReader();
+			char[] cbuf = new char[len];
+			reqReader.read(cbuf);
+			reqReader.close();
+			String content = new String(cbuf);
+	
+			
+			List<SalaryIncrement> si = (List<SalaryIncrement>) xmlStream.fromXML(content);
+			
+			try {
+				SimpleEmployeeDB.getInstance().incrementSalaryOfDepartment(si);
+			} catch (DepartmentNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NegativeSalaryIncrementException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		}
 		
 		
