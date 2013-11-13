@@ -26,24 +26,21 @@ public class SimpleEmployeeDB implements EmployeeDB {
 
 	@Override
 	public synchronized List<Employee> listAllEmployees() {
-		
+
 		return instanceList;
 	}
 
 	@Override
 	public synchronized List<Employee> listEmployeesInDept(
 			List<Integer> departmentIds) {
-		
+
 		ArrayList<Employee> employeeListInDep = new ArrayList<Employee>();
-		for(int i=0; i<departmentIds.size(); i++)
-		{
-			for(int j=0; j<instanceList.size(); j++)
-			{
-				if (instanceList.get(j).getDepartment() == departmentIds.get(i))
-				{
+		for (int i = 0; i < departmentIds.size(); i++) {
+			for (int j = 0; j < instanceList.size(); j++) {
+				if (instanceList.get(j).getDepartment() == departmentIds.get(i)) {
 					employeeListInDep.add(instanceList.get(j));
 				}
-				
+
 			}
 
 		}
@@ -55,42 +52,36 @@ public class SimpleEmployeeDB implements EmployeeDB {
 			List<SalaryIncrement> salaryIncrements)
 			throws DepartmentNotFoundException,
 			NegativeSalaryIncrementException {
-		List<Integer> listAllDet = new ArrayList<Integer>();
-		
+
 		List<Integer> allDept = new ArrayList<Integer>();
-		
-		
-		for(int i = 0; i < instanceList.size(); i++) {
+		List<Boolean> checkDep = new ArrayList<Boolean>();
+		List<Boolean> checkSal = new ArrayList<Boolean>();
+
+		for (int i = 0; i < instanceList.size(); i++) {
 			allDept.add(instanceList.get(i).getDepartment());
 		}
-		
-		Boolean exists = true;
-		
-		for(int i = 0; i< salaryIncrements.size(); i++) {
-			exists = allDept.contains(salaryIncrements.get(i).getDepartment());
+
+		for (int m = 0; m < salaryIncrements.size(); m++) {
+			checkDep.add(allDept.contains(salaryIncrements.get(m)
+					.getDepartment()));
+			checkSal.add(salaryIncrements.get(m).getIncrementBy() >= 0);
 		}
-		
-		if(exists == false) {
+
+		if (checkDep.contains(false)) {
 			throw new DepartmentNotFoundException();
 		}
-		
-		for(int i=0; i<salaryIncrements.size();i++)
-		{
-			if(salaryIncrements.get(i).getIncrementBy() >=0)
-			{
-				for(int j=0; j<instanceList.size();j++)
-				{
-					listAllDet.add(salaryIncrements.get(i).getDepartment());
-					if(salaryIncrements.get(i).getDepartment() == instanceList.get(j).getDepartment())
-					{
-						instanceList.get(j).setSalary(instanceList.get(j).getSalary()+salaryIncrements.get(i).getIncrementBy());
-					}
-					else {throw new DepartmentNotFoundException();}
-					
-				}
+
+		if (checkSal.contains(false)) {
+			throw new NegativeSalaryIncrementException();
+		}
+
+		for (int i = 0; i < salaryIncrements.size(); i++) {
+			for (int j = 0; j < instanceList.size(); j++) {
+				instanceList.get(j).setSalary(
+						instanceList.get(j).getSalary()
+								+ salaryIncrements.get(i).getIncrementBy());
 			}
-			else {throw new NegativeSalaryIncrementException();}
-			
+
 		}
 	}
 
