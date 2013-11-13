@@ -90,8 +90,8 @@ public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 		
 		ContentExchange exchange = new ContentExchange();
 		String requestURL = String.format(
-				serverURL + "addemployee?id=%d&name=%s&department=%d&salary=%f", 
-				emp.id, emp.name, emp.department, emp.salary);
+				serverURL + "addemployee?id=%d&name=%s&department=%d&salary=%d", 
+				emp.id, emp.name, emp.department, (int) emp.salary);
 		exchange.setURL(requestURL);
 		try {
 			client.send(exchange);
@@ -128,7 +128,7 @@ public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 				e.printStackTrace();
 				return null;
 			}
-			String response = "";
+			String response = null;
 			try {
 				response = exchange.getResponseContent();
 			} catch (UnsupportedEncodingException e) {
@@ -156,7 +156,7 @@ public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 				e.printStackTrace();
 			}
 			ContentExchange exchange = new ContentExchange();
-			exchange.setURL(serverURL + "listallemployees");
+			exchange.setURL(serverURL + "listemployeesindept");
 			try 
 			{
 				client.send(exchange);

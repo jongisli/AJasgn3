@@ -31,15 +31,8 @@ public class EmployeeDBTest {
 	private Employee employee3;
 
 	@BeforeClass
-	public void setUp() throws Exception {
+	public static void setUpBeforeClass() throws Exception {
 		employeeDB = new EmployeeDBHTTPClient();
-		
-		employee1 = new Employee();
-		SetEmployeeProperties(employee1, 1, "Jon", 1, 100);
-		employee2 = new Employee();
-		SetEmployeeProperties(employee2, 2, "Georg", 2, 200);
-		employee3 = new Employee();
-		SetEmployeeProperties(employee3, 3, "Bin", 1, 100);
 		
 		// By setting the employeeDB
 		// to either the server implementation first, you can write the server
@@ -54,6 +47,12 @@ public class EmployeeDBTest {
 
 	@Test
 	public void testAddEmployee() {
+		employee1 = new Employee();
+		SetEmployeeProperties(employee1, 1, "Jon", 1, 100);
+		employee2 = new Employee();
+		SetEmployeeProperties(employee2, 2, "Georg", 2, 200);
+		employee3 = new Employee();
+		SetEmployeeProperties(employee3, 3, "Bin", 1, 100);
 		//assertEquals(0, employeeDB.listAllEmployees().size());
 		Boolean OK = true;
 		try {
