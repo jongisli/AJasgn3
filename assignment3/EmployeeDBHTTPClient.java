@@ -10,7 +10,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.eclipse.jetty.client.ContentExchange;
 import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.io.Buffer;
+import org.eclipse.jetty.io.ByteArrayBuffer;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 /**
  * EmployeeDBHTTPClient implements the client side methods of EmployeeDB
@@ -26,9 +32,15 @@ public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 	private static final String filePath = "/home/bonii/Dropbox/teaching/AJava/workspace-bonii/src/assignment3/departmentservermapping.properties";
 	private Map<Integer, String> departmentServerURLMap;
 
-	public EmployeeDBHTTPClient() throws IOException, IllegalArgumentException {
+	XStream xmlStream;;
+
+	public EmployeeDBHTTPClient() throws Exception {
 		initMappings();
-		// You need to initiate HTTPClient here
+		client = new HttpClient();
+		client.setTimeout(3000);
+		client.start();
+		
+		xmlStream = new XStream(new StaxDriver());
 	}
 
 	public void initMappings() throws IOException, IllegalArgumentException {
@@ -71,7 +83,24 @@ public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 
 	@Override
 	public void addEmployee(Employee emp) {
-		// TODO Auto-generated method stub
+		String empString = xmlStream.toXML(emp);
+		String serverURL = "";
+		try {
+			serverURL = getServerURLForDepartment(emp.department);
+		} catch (DepartmentNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		ContentExchange exchange = new ContentExchange();
+		exchange.setURL(serverURL + "addemployee");
+		Buffer buffer = new ByteArrayBuffer(empString);
+		exchange.setRequestContent(buffer);
+		try {
+			client.send(exchange);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
