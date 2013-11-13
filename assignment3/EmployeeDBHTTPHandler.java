@@ -72,7 +72,7 @@ public class EmployeeDBHTTPHandler extends AbstractHandler {
 			xmlString = xmlStream.toXML(emps);
 			
 			res.setContentType("application/xml");
-			res.getWriter().println(xmlString);
+			res.getWriter().print(xmlString);
 
 		}
 		else if(uri.equalsIgnoreCase("/listemployeesindept")) {
@@ -98,7 +98,7 @@ public class EmployeeDBHTTPHandler extends AbstractHandler {
 			xmlString = xmlStream.toXML(emps);
 			
 			res.setContentType("application/xml");
-			res.getWriter().println(xmlString);
+			res.getWriter().print(xmlString);
 			
 		} else if(uri.equalsIgnoreCase("/incrementsalaryofdepartment")) {
 			res.setContentType("text/html;charset=utf-8");
