@@ -214,6 +214,24 @@ public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		try 
+		{
+			exchange.waitForDone();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		String response = "";
+		try {
+			response = exchange.getResponseContent();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		int responseCode = (Integer) xmlStream.fromXML(response);
+		if (responseCode == -1)
+			throw new DepartmentNotFoundException();
+		if (responseCode == -2)
+			throw new NegativeSalaryIncrementException();
+		
 	}
 
 	/**
