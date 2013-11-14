@@ -121,16 +121,19 @@ public class EmployeeDBHTTPHandler extends AbstractHandler {
 			} catch (DepartmentNotFoundException e) {
 				error = -1;
 				String xmlString = xmlStream.toXML(error);
+				res.setContentType("application/xml");
 				res.getWriter().println(xmlString);
 				
 			} catch (NegativeSalaryIncrementException e) {
 				error = -2;
 				String xmlString = xmlStream.toXML(error);
+				res.setContentType("application/xml");
 				res.getWriter().println(xmlString);
 			}
 			
 			error = 1;
 			String xmlString = xmlStream.toXML(error);
+			res.setContentType("application/xml");
 			res.getWriter().println(xmlString);
 
 		}
