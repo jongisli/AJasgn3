@@ -112,18 +112,21 @@ public class EmployeeDBHTTPHandler extends AbstractHandler {
 			reqReader.read(cbuf);
 			reqReader.close();
 			String content = new String(cbuf);
-	
+			int error;
 			
 			List<SalaryIncrement> si = (List<SalaryIncrement>) xmlStream.fromXML(content);
 			
 			try {
 				SimpleEmployeeDB.getInstance().incrementSalaryOfDepartment(si);
 			} catch (DepartmentNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				error = -1;
+				String xmlString = xmlStream.toXML(error);
+				res.getWriter().println(xmlString);
+				
 			} catch (NegativeSalaryIncrementException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				error = -2;
+				String xmlString = xmlStream.toXML(error);
+				res.getWriter().println(xmlString);
 			}
 
 		}
