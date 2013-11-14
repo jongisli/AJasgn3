@@ -128,6 +128,10 @@ public class EmployeeDBHTTPHandler extends AbstractHandler {
 				String xmlString = xmlStream.toXML(error);
 				res.getWriter().println(xmlString);
 			}
+			
+			error = 1;
+			String xmlString = xmlStream.toXML(error);
+			res.getWriter().println(xmlString);
 
 		}
 		
