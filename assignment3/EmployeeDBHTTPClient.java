@@ -199,7 +199,7 @@ public class EmployeeDBHTTPClient implements EmployeeDBClient, EmployeeDB {
 		try {
 			serverURL = getServerURLForDepartment(salaryIncrements.get(0).getDepartment());
 		} catch (DepartmentNotFoundException e) {
-			e.printStackTrace();
+			throw e;
 		}
 		XStream xmlStream = new XStream(new StaxDriver());
 		String salIncrString = xmlStream.toXML(salaryIncrements);
